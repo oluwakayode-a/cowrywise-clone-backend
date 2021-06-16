@@ -8,4 +8,4 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(to="images/", blank=True)
+    profile_pic = models.ImageField(upload_to="images/", blank=True)
