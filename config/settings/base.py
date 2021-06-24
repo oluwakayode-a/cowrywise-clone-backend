@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'apps.accounts',
     'apps.stash',
+    'apps.plans'
 ]
 
 CLOUDINARY_STORAGE = {
