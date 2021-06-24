@@ -28,14 +28,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.accounts',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
     'allauth',
     'allauth.account',
     'cloudinary_storage',
-    'cloudinary'
+    'cloudinary',
+
+    'apps.accounts',
+    'apps.stash',
 ]
 
 CLOUDINARY_STORAGE = {
