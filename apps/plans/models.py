@@ -24,6 +24,9 @@ class Investment(models.Model):
     price_per_unit = models.IntegerField()
     icon = models.CharField(max_length=100)
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Savings(models.Model):
     TYPES = (
@@ -46,6 +49,7 @@ class Savings(models.Model):
 
 class UserInvestmentPlan(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    balance = models.IntegerField()
     plan = models.ForeignKey(Investment, on_delete=models.CASCADE)
 
 

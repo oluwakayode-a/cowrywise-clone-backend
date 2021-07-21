@@ -32,7 +32,7 @@ class BankDetails(models.Model):
 
 class Stash(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    balance = models.IntegerField()
+    balance = models.IntegerField(default=0)
     account_details = models.ForeignKey(BankDetails, on_delete=models.CASCADE)
 
 
