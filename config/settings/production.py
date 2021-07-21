@@ -1,7 +1,6 @@
 from .base import *
 import os
-# import dj_database_url
-import django_heroku
+import dj_database_url
 
 
 my_debug = os.getenv('DEBUG')
@@ -14,10 +13,16 @@ else:
 ALLOWED_HOSTS = ['cowrywise-backend.herokuapp.com']
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-DATABASE_URL = os.getenv('DATABASE_URL')
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
+    }
+}
+
+db = dj_database_url.config()
+DATABASES['default'].update(db)
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
-
-django_heroku.settings(locals())
