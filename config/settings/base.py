@@ -1,7 +1,7 @@
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
-# import django_heroku
+import django_heroku
 
 load_dotenv()
 
@@ -132,4 +132,4 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
