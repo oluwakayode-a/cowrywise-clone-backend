@@ -1,6 +1,8 @@
 from .base import *
 import os
-import dj_database_url
+# import dj_database_url
+import django_heroku
+
 
 my_debug = os.getenv('DEBUG')
 if my_debug == "False":
@@ -17,3 +19,5 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
+
+django_heroku.settings(locals())
