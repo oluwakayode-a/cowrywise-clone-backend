@@ -30,23 +30,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
-    'rest_auth',
-    'allauth',
-    'allauth.account',
-    'cloudinary_storage',
-    'cloudinary',
-
-    'apps.accounts',
-    'apps.stash',
-    'apps.plans'
+    'accounts',
+    'stash',
+    'plans'
 ]
-
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUD_NAME'),
-    'API_KEY': config('CLOUDINARY_API_KEY'),
-    'API_SECRET': config('CLOUDINARY_API_SECRET')
-}
 
 SITE_ID = 1
 
@@ -126,7 +113,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
