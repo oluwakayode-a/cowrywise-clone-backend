@@ -2,6 +2,7 @@ from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
 import os
+from datetime import timedelta
 
 load_dotenv()
 
@@ -61,6 +62,12 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=10),
+    'REFRESH_TOKEN_LIFETIME' : timedelta(days=2)
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

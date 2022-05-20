@@ -48,6 +48,9 @@ class Savings(models.Model):
 
 
 class UserInvestmentPlan(models.Model):
+    """
+    Investments are one time.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.IntegerField()
     plan = models.ForeignKey(Investment, on_delete=models.CASCADE)
