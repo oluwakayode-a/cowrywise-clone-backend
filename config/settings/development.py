@@ -23,3 +23,5 @@ if os.environ.get('GITHUB_WORKFLOW'):
             'PORT': '5432',
         }
     }
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

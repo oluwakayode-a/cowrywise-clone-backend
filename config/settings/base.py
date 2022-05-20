@@ -29,7 +29,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # THIRD-PARTY LIBRARIES
     'rest_framework',
+    'drf_yasg',
+    'phonenumber_field',
+    'rest_framework_simplejwt',
+
+
+    # INSTALLED APPS.
     'accounts',
     'stash',
     'plans'
@@ -37,9 +44,13 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-REST_USE_JWT = True
-
 AUTH_USER_MODEL = 'accounts.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

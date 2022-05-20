@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from phonenumber_field.modelfields import PhoneNumberField
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -36,23 +38,40 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
+    phone_number = PhoneNumberField(unique=True, blank=True, null=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = self.email.split("@")[0]
+        return super().save(*args, **kwargs)
+    
+    @property
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+
+        return {
+            'refresh' : str(refresh),
+            'access' : str(refresh.access_token)
+        }
     
 
 
 class Profile(models.Model):
     GENDER = (
+        ("select", "Select"),
         ('male', 'Male'),
         ('female', 'Female')
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to="images/", blank=True)
-    phone_number = models.CharField(max_length=20)
-    gender = models.CharField(max_length=10, choices=GENDER)
+    gender = models.CharField(max_length=10, choices=GENDER, default="select")
     visibility = models.BooleanField(default=False)
+    bvn = models.CharField(max_length=225, default="")
+    date_of_birth = models.DateField()
 
 
 class NextofKin(models.Model):
