@@ -7,7 +7,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-from .models import User
+from .models import NextofKin, Profile, Security, User
 
 class SubmitEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -143,3 +143,22 @@ class SetNewPasswordSerializer(serializers.Serializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ("profile_pic", "visibility", "gender", "bvn", "date_of_birth")
+
+
+class SecuritySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Security
+        fields = ("two_fa", "pin",)
+
+
+class NextofKinSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NextofKin
+        fields = "__all__"
+        extra_kwargs={"user" : {"read_only" : True}}

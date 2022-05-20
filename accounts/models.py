@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -58,6 +60,23 @@ class User(AbstractUser):
             'access' : str(refresh.access_token)
         }
     
+class NextofKin(models.Model):
+    GENDER = (
+        ('male', 'Male'),
+        ('female', 'Female')
+    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    phone_number = PhoneNumberField()
+    gender = models.CharField(max_length=10, choices=GENDER)
+    relationship = models.CharField(max_length=100, help_text="Father, Mother, etc.")
+
+
+class Security(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    two_fa = models.BooleanField("Two Factor Authentication", default=False)
+    pin = models.IntegerField(default=1234)
 
 
 class Profile(models.Model):
@@ -67,21 +86,25 @@ class Profile(models.Model):
         ('female', 'Female')
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to="images/", blank=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    profile_pic = models.ImageField(upload_to="images/", blank=True, null=True)
     gender = models.CharField(max_length=10, choices=GENDER, default="select")
     visibility = models.BooleanField(default=False)
     bvn = models.CharField(max_length=225, default="")
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.user.first_name = self.first_name
+        self.user.last_name = self.last_name
+        self.user.save()
+
+        return super().save(*args, **kwargs)
 
 
-class NextofKin(models.Model):
-    GENDER = (
-        ('male', 'Male'),
-        ('female', 'Female')
-    )
-    name = models.CharField(max_length=200)
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=20)
-    gender = models.CharField(max_length=10, choices=GENDER)
-    relationship = models.CharField(max_length=100, help_text="Father, Mother, etc.")
-    # bank_details ==> when the payments app is done.
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Security.objects.create(user=instance)
+        NextofKin.objects.create(user=instance)
+        Profile.objects.create(user=instance)

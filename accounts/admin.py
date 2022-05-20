@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
+from .models import NextofKin, Security, User
 from django.utils.translation import gettext_lazy as _
 
 # Register your models here.
@@ -22,3 +22,6 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'is_staff', 'username')
     search_fields = ('email',)
     ordering = ('email',)
+
+admin.site.register(Security)
+admin.site.register(NextofKin)

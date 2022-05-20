@@ -9,10 +9,10 @@ from django.shortcuts import redirect
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from accounts.models import User
+from accounts.models import NextofKin, Profile, Security, User
 
 
-from accounts.serializers import ChangePasswordSerializer, LoginSerializer, OTPSerializer, PasswordResetSerializer, SetNewPasswordSerializer, SubmitEmailSerializer, UserSerializer
+from accounts.serializers import ChangePasswordSerializer, LoginSerializer, NextofKinSerializer, OTPSerializer, PasswordResetSerializer, ProfileSerializer, SecuritySerializer, SetNewPasswordSerializer, SubmitEmailSerializer, UserSerializer
 from utils.send_email import send_email
 from utils.otp import generate_otp, verify_otp
 
@@ -180,3 +180,87 @@ class ChangePasswordView(UpdateAPIView):
 
             return Response(response)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateProfileView(UpdateAPIView):
+    """
+    Enpoint for updating User Profile
+    """
+    model = Profile
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProfileSerializer
+
+    def get_object(self, queryset=None):
+        obj = Profile.objects.get(user=self.request.user)
+        return obj
+    
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        serializer.save()
+        response = {
+            'status' : 'success',
+            'code' : status.HTTP_200_OK,
+            'message' : 'Profile updated successfully',
+            'data': serializer.data
+        }
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class SecurityPrefsUpdateView(UpdateAPIView):
+    """
+    Endpoint for updating user security preferences
+    """
+    model = Security
+    serializer_class = SecuritySerializer
+    permission_classes = (IsAuthenticated,)
+    
+    def get_object(self):
+        obj = Security.objects.get(user=self.request.user)
+        return obj
+    
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.serializer_class(data=request.data, instance=self.object)
+        serializer.is_valid(raise_exception=True)
+        
+        serializer.save()
+        response = {
+            'status' : 'success',
+            'code' : status.HTTP_200_OK,
+            'message' : 'Profile updated successfully',
+            'data': serializer.data
+        }
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class NextofKinUpdateView(UpdateAPIView):
+    """
+    Endpoint for updating user security preferences
+    """
+    model = NextofKin
+    serializer_class = NextofKinSerializer
+    permission_classes = (IsAuthenticated,)
+    
+    def get_object(self):
+        obj = NextofKin.objects.get(user=self.request.user)
+        return obj
+    
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.serializer_class(data=request.data, instance=self.object)
+        serializer.is_valid(raise_exception=True)
+        
+        serializer.save()
+        response = {
+            'status' : 'success',
+            'code' : status.HTTP_200_OK,
+            'message' : 'Profile updated successfully',
+            'data': serializer.data
+        }
+        return Response(response, status=status.HTTP_200_OK)
+
+        
+
