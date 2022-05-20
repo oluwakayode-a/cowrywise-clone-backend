@@ -148,7 +148,8 @@ class ChangePasswordSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ("profile_pic", "visibility", "gender", "bvn", "date_of_birth")
+        fields = "__all__"
+        extra_kwargs={"user" : {"read_only" : True}}
 
 
 class SecuritySerializer(serializers.ModelSerializer):

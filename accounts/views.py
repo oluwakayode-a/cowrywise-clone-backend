@@ -196,7 +196,7 @@ class UpdateProfileView(UpdateAPIView):
     
     def update(self, request, *args, **kwargs):
         self.object = self.get_object()
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, instance=self.object)
         serializer.is_valid(raise_exception=True)
         
         serializer.save()
