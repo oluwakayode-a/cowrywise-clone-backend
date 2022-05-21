@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'plans'
 ]
 
+PAYSTACK_PUBLIC_KEY=os.environ.get('PAYSTACK_PUBLIC_KEY')
+PAYSTACK_PRIVATE_KEY=os.environ.get('PAYSTACK_PRIVATE_KEY')
+
 SITE_ID = 1
 
 AUTH_USER_MODEL = 'accounts.User'

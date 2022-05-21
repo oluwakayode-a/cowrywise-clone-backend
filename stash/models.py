@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 User = get_user_model()
 
@@ -33,7 +35,7 @@ class BankDetails(models.Model):
 class Stash(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.IntegerField(default=0)
-    account_details = models.ForeignKey(BankDetails, on_delete=models.CASCADE)
+    account_details = models.ForeignKey(BankDetails, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Activity(models.Model):
@@ -44,3 +46,9 @@ class Activity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=500)
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Stash.objects.create(user=instance)

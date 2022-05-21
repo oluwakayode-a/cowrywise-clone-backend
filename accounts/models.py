@@ -108,3 +108,4 @@ def create_user_profile(sender, instance, created, **kwargs):
         Security.objects.create(user=instance)
         NextofKin.objects.create(user=instance)
         Profile.objects.create(user=instance)
+        # Stash.objects.create(user=instance)
