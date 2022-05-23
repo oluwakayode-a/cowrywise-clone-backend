@@ -6,7 +6,7 @@ class BankSerializer(serializers.ModelSerializer):
         model = BankDetails
         fields = ("id", "bank", "account_number", "account_name", "recipient_code",)
         extra_kwargs = {
-            "recipient": {"read_only": True},
+            "recipient_code": {"read_only": True},
             "id": {"read_only": True}
         }
     

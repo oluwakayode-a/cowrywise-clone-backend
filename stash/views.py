@@ -4,9 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import F
+from payments.models import BankDetails
 from plans.models import Savings, UserInvestmentPlan
 
-from stash.serializers import StashSerializer, TransferStashSerializer
+from stash.serializers import StashSerializer, TransferBankAccountSerializer, TransferStashSerializer
 from utils.paystack_funcs import transfer, verify_transaction
 from .models import Stash
 from accounts.models import User
@@ -31,6 +32,7 @@ class StashTopUpView(GenericAPIView):
 
             stash = Stash.objects.get(user=request.user)
             stash.balance = F("balance") + int(amount)
+
             stash.save()
 
             response = {
@@ -142,7 +144,7 @@ class TransferToSavingsPlan(GenericAPIView):
             return Response({"error" : "Plan does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
 class TransferToBankAccount(GenericAPIView):
-    serializer_class = TransferStashSerializer
+    serializer_class = TransferBankAccountSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -150,6 +152,7 @@ class TransferToBankAccount(GenericAPIView):
 
         amount = int(serializer.validated_data["amount"])
         stash = Stash.objects.get(user=request.user)
+        recipient_code = serializer.validated_data["recipient"]
 
         if stash.balance < amount:
             # Return failed
@@ -161,17 +164,11 @@ class TransferToBankAccount(GenericAPIView):
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
         else:
-            response = transfer(amount, stash)
-            if response:
-                stash.balance = F("balance") - amount
-                stash.save()
-
-                response = {
-                    'status' : 'success',
-                    'code' : status.HTTP_200_OK,
-                    'message' : 'Transfer successful',
-                    'data': serializer.data
-                }
+            recipient = BankDetails.objects.filter(recipient_code=recipient_code)
+            if recipient.exists():
+                response = transfer(amount=amount, recipient_code=recipient_code)
+                # stash.balance = F("balance") - amount
+                # stash.save()
 
                 return Response(response, status=status.HTTP_200_OK)
             else:

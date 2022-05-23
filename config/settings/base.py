@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'stash',
     'plans',
     'payments',
+    'transactions',
 ]
 
 PAYSTACK_PUBLIC_KEY=os.environ.get('PAYSTACK_PUBLIC_KEY')

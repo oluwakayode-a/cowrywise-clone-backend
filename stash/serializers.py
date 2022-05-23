@@ -13,4 +13,13 @@ class TransferStashSerializer(serializers.Serializer):
     reference = serializers.CharField()
 
     class Meta:
+        fields = ("amount", "plan_id")
+
+
+class TransferBankAccountSerializer(serializers.Serializer):
+    amount = serializers.IntegerField()
+    recipient = serializers.CharField()
+    reference = serializers.CharField(read_only=True)
+
+    class Meta:
         fields = "__all__"

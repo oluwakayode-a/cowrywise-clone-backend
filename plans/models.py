@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from transactions.models import PlanTransaction
+
 User = get_user_model()
 
 # Create your models here.
@@ -46,6 +48,16 @@ class Savings(models.Model):
     balance = models.IntegerField("Current balance left in the savings plan.")
     frequency = models.CharField(max_length=20, choices=FREQ, default="manual")
 
+    def record_transaction(self, reference, status, description):
+        r, created = PlanTransaction.objects.update_or_create(
+            stash=self,
+            reference=reference,
+            status=status,
+            description=description,
+        )
+        r.save()
+        return True
+
 
 class UserInvestmentPlan(models.Model):
     """
@@ -54,3 +66,13 @@ class UserInvestmentPlan(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.IntegerField()
     plan = models.ForeignKey(Investment, on_delete=models.CASCADE)
+
+    def record_transaction(self, reference, status, description):
+        r, created = PlanTransaction.objects.update_or_create(
+            stash=self,
+            reference=reference,
+            status=status,
+            description=description,
+        )
+        r.save()
+        return True
