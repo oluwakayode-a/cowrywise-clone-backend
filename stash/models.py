@@ -16,7 +16,7 @@ class Stash(models.Model):
 
     def record_transaction(self, reference, status, description):
         r, created = StashTransaction.objects.update_or_create(
-            stash=self,
+            triggered_by=self,
             reference=reference,
             status=status,
             description=description,
