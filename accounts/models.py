@@ -104,8 +104,7 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created:
+    if created and not instance.is_staff: # Only create details for non-admin users
         Security.objects.create(user=instance)
         NextofKin.objects.create(user=instance)
         Profile.objects.create(user=instance)
-        # Stash.objects.create(user=instance)

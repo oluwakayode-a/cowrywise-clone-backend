@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     # INSTALLED APPS.
     'accounts',
     'stash',
-    'plans'
+    'plans',
+    'payments',
 ]
 
 PAYSTACK_PUBLIC_KEY=os.environ.get('PAYSTACK_PUBLIC_KEY')

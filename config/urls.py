@@ -41,4 +41,5 @@ urlpatterns = [
     path('auth/', include('accounts.urls')),
     path('plans/', include('plans.urls')),
     path("stash/", include("stash.urls")),
+    path("payments/", include("payments.urls"))
 ]
